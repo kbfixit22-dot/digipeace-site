@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://digipeace.com/sitemap.xml
+Sitemap: https://www.digipeace.com/sitemap.xml
