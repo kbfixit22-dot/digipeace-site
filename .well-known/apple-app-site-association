@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["XQT3AZFZYN.com.digipeace.neverForget"],
+        "components": [
+          { "/": "/c", "comment": "Shared ElfAnt countdowns" },
+          { "/": "/c/*", "comment": "Shared ElfAnt countdowns" }
+        ]
+      }
+    ]
+  }
+}

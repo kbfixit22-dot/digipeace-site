@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.digipeace.never_forget",
+      "sha256_cert_fingerprints": [
+        "69:13:B2:3E:37:0D:3A:8C:D3:E7:4B:BE:34:FA:96:DA:7B:61:BD:8C:02:F5:4F:E0:78:7B:7D:2A:3F:27:55:56"
+      ]
+    }
+  }
+]

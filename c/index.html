@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A countdown for you — ElfAnt</title>
+<meta name="description" content="Someone shared a countdown with you. Add it to ElfAnt to keep it on your Home and get a reminder before the big day.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="A countdown for you on ElfAnt">
+<meta property="og:description" content="Tap to add it to your ElfAnt and watch the days tick down.">
+<meta property="og:image" content="https://www.digipeace.com/assets/elfant-icon.jpg">
+<link rel="icon" type="image/png" href="/assets/digipeace-mark.png">
+<style>
+:root{--ink:#2D2D3A;--muted:#5E5E6E;--bg:#FFF8F0;--panel:#FFFFFF}
+@media (prefers-color-scheme: dark){:root{--ink:#F2F3F8;--muted:#B4B8CC;--bg:#0F1B2E;--panel:#1A2F4F}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,'SF Pro Text',system-ui,sans-serif}
+a{color:#4352d6}
+main{max-width:440px;margin:0 auto;padding:24px 16px 32px;display:flex;flex-direction:column;gap:16px}
+.lead{margin:0;text-align:center;font-size:15px;font-weight:700;color:var(--muted)}
+.tile{position:relative;overflow:hidden;border-radius:28px;padding:20px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:14px;background:linear-gradient(135deg,#B46BFF,#6A3FD6)}
+.tile::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% -20%,rgba(255,255,255,.32),rgba(255,255,255,0) 60%);pointer-events:none}
+.wm{position:absolute;right:-34px;bottom:-44px;font-size:180px;line-height:1;opacity:.28;transform:rotate(-14deg);pointer-events:none}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;position:relative;z-index:1}
+.name{margin:0;font-size:28px;font-weight:900;overflow-wrap:anywhere}
+.when{font-size:12px;font-weight:900;letter-spacing:1.5px;white-space:nowrap}
+.clock{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;position:relative;z-index:1}
+.clock div{border-radius:16px;background:rgba(0,0,0,.18);padding:12px 0;display:flex;flex-direction:column;align-items:center}
+.clock div:last-child{background:rgba(255,255,255,.22)}
+.clock b{font-size:30px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.clock span{font-size:11px;font-weight:800;letter-spacing:1px}
+.here{margin:0;font-size:36px;font-weight:900;position:relative;z-index:1}
+.pitch{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:20px;background:var(--panel);box-shadow:0 8px 18px rgba(0,0,0,.06);font-size:14px;font-weight:600;line-height:1.35}
+.pitch img{width:52px;height:52px;border-radius:12px;flex:none}
+.stores{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stores a{height:52px;border-radius:16px;background:#1c1c1e;color:#fff;text-decoration:none;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.open{margin:0;text-align:center;font-size:14px;font-weight:600;color:var(--muted);line-height:1.4}
+.open a{font-weight:800}
+.bad{text-align:center;font-size:16px;font-weight:600;color:var(--muted)}
+footer{text-align:center;font-size:12px;color:var(--muted)}
+footer a{color:inherit}
+</style>
+</head>
+<body>
+<main>
+  <p class="lead" id="lead">Someone is counting down to</p>
+  <section class="tile" id="tile" aria-live="off">
+    <span class="wm" id="wm" aria-hidden="true">⭐</span>
+    <div class="head"><h1 class="name" id="name">A big day</h1><span class="when" id="when"></span></div>
+    <div class="clock" id="clock">
+      <div><b id="dd">0</b><span>DAYS</span></div>
+      <div><b id="hh">00</b><span>HRS</span></div>
+      <div><b id="mm">00</b><span>MIN</span></div>
+      <div><b id="ss">00</b><span>SEC</span></div>
+    </div>
+    <p class="here" id="here" hidden>It's here! 🎉</p>
+  </section>
+  <p class="bad" id="bad" hidden>This countdown link looks incomplete. Ask your friend to send it again.</p>
+
+  <div class="pitch">
+    <img src="/assets/elfant-icon.jpg" alt="ElfAnt app icon">
+    <span>Get <b>ElfAnt</b> to keep this countdown on your Home and get a reminder before the big day.</span>
+  </div>
+  <div class="stores">
+    <a href="https://apps.apple.com/us/app/digipeace-elfant/id6774312823">App Store</a>
+    <a href="https://play.google.com/store/apps/details?id=com.digipeace.never_forget">Google Play</a>
+  </div>
+  <p class="open">Already have ElfAnt? <a id="open" href="elfant://countdown">Open in ElfAnt</a> and it drops right in.</p>
+  <footer>Made by <a href="/">DigiPeace</a></footer>
+</main>
+<script>
+(function () {
+  // Same colors as the app's countdown tiles.
+  var palettes = {
+    red: ['#FF6B5E', '#C9302C'], orange: ['#FF8A3D', '#D94A2B'], gold: ['#FFD34D', '#E08A00'],
+    green: ['#3FE08A', '#139A5A'], blue: ['#36B3FF', '#1F5FD6'], purple: ['#B46BFF', '#6A3FD6']
+  };
+  var days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  var q = new URLSearchParams(location.search);
+  var $ = function (id) { return document.getElementById(id); };
+
+  // "2026-12-25" or "2026-12-25T19:30", read as local time.
+  var m = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?$/.exec(q.get('d') || '');
+  var name = (q.get('n') || '').trim().slice(0, 40);
+  if (!m || !name) {
+    $('tile').hidden = true;
+    $('lead').hidden = true;
+    $('bad').hidden = false;
+    return;
+  }
+  var mon = +m[2] - 1, day = +m[3], hr = +(m[4] || 0), min = +(m[5] || 0);
+  var yearly = q.get('y') === '1';
+  function occurrence(now) {
+    if (!yearly) return new Date(+m[1], mon, day, hr, min);
+    var next = new Date(now.getFullYear(), mon, day, hr, min);
+    var endOfDay = new Date(next.getFullYear(), mon, day + 1);
+    if (now >= endOfDay) next = new Date(now.getFullYear() + 1, mon, day, hr, min);
+    return next;
+  }
+
+  var from = (q.get('f') || '').trim().slice(0, 24);
+  var emoji = (q.get('e') || '⭐').slice(0, 8);
+  var p = palettes[q.get('c')] || palettes.purple;
+  $('lead').textContent = from ? from + ' is counting down to' : 'Someone is counting down to';
+  $('name').textContent = emoji + ' ' + name;
+  $('wm').textContent = emoji;
+  $('tile').style.background = 'linear-gradient(135deg,' + p[0] + ',' + p[1] + ')';
+  document.title = name + ' countdown — ElfAnt';
+  $('open').href = 'elfant://countdown' + location.search;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function tick() {
+    var now = new Date();
+    var occ = occurrence(now);
+    $('when').textContent = days[occ.getDay()] + ', ' + months[occ.getMonth()] + ' ' + occ.getDate();
+    var left = occ - now;
+    if (left <= 0) {
+      $('clock').hidden = true;
+      $('here').hidden = false;
+      return;
+    }
+    $('dd').textContent = Math.floor(left / 86400000);
+    $('hh').textContent = pad(Math.floor(left / 3600000) % 24);
+    $('mm').textContent = pad(Math.floor(left / 60000) % 60);
+    $('ss').textContent = pad(Math.floor(left / 1000) % 60);
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+</body>
+</html>
